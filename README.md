@@ -43,7 +43,12 @@ cdk deploy
 cdk destroy PrivateIsuStack
 ```
 
+## Document
+
+https://github.com/aws-samples/aws-cdk-examples/tree/master/go
+
 ## License
 
 This repository is licensed under the MIT license.
+
 Froked from https://github.com/hoto17296/churadata-isucon
