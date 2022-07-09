@@ -1,0 +1,35 @@
+fqdn: private-isu-{i_name}
+
+system_info:
+  default_user:
+    name: isucon
+
+packages:
+  - awscli
+
+write_files:
+  - path: /home/isucon/.aws/config
+    content: |
+      [profile score-board]
+      region = ap-northeast-1
+    owner: "isucon:isucon"
+    permissions: "0600"
+  - path: /home/isucon/.aws/credentials
+    content: |
+      [score-board]
+      aws_access_key_id = {score_board_aws_access_key_id}
+      aws_secret_access_key = {score_board_aws_secret_access_key}
+    owner: "isucon:isucon"
+    permissions: "0600"
+
+runcmd:
+  # env.sh を修正
+  - sudo systemctl stop isu-ruby
+  - sudo systemctl disable isu-ruby
+  - systemctl restart isu-go.service
+  - sudo systemctl enable isu-go
+  # ベンチマークスクリプトをインストール
+  - wget -O /home/isucon/bench.sh https://raw.githubusercontent.com/mnsys/mnsys-cdk-isucon/main/misc/bench.sh
+  - sed --in-place -E 's/^DISPLAY_NAME=".*"$/DISPLAY_NAME="{display_name}"/g' /home/isucon/bench.sh
+  - chown isucon:isucon /home/isucon/bench.sh
+  - chmod +x /home/isucon/bench.sh
